@@ -5,9 +5,9 @@
     <!-- Open Graph meta tags -->
     <meta property="og:title" content="WSJ Summary 2024">
     <meta property="og:description" content="Here's my WSJ reading summary!">
-    <meta property="og:image" content="https://miro.medium.com/v2/resize:fit:720/format:webp/1*c6SPmmWmKoflLoQFfyMR2g.jpeg">
+    <meta property="og:image" content="https://gbzaid2.github.io/testPage/wsjImage.png">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://example.com/your-page-url">
+    <meta property="og:url" content="https://gbzaid2.github.io/testPage/index.html">
     <!-- End of Open Graph meta tags -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WSJ Summary 2024</title>
@@ -65,13 +65,13 @@
             font-weight: bold;
             margin-top: 20px;
             text-decoration: none;
+            cursor: pointer;
         }
 
         .subscribe-button:hover {
             background-color: #008bb3;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
     <div id="content" class="container">
@@ -87,36 +87,21 @@
     </div>
 
     <script>
-        async function shareSummary() {
-            try {
-                // Capture screenshot using html2canvas
-                const content = document.getElementById('content');
-                const canvas = await html2canvas(content);
-
-                // Directly convert canvas to Blob
-                canvas.toBlob(async (blob) => {
-                    if (!blob) {
-                        console.error("Failed to create Blob from canvas");
-                        return;
-                    }
-
-                    // Create a file from the blob
-                    const file = new File([blob], "wsj-summary.png", { type: "image/png" });
-
-                    // Check if file sharing is supported
-                    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                        await navigator.share({
-                            title: "WSJ Summary 2024",
-                            text: "Here's my WSJ reading summary!",
-                            files: [file]
-                        });
-                        console.log("Shared successfully with image!");
-                    } else {
-                        console.log("Sharing not supported or image file type not supported.");
-                    }
-                }, 'image/png');
-            } catch (error) {
-                console.error("Error sharing summary with image:", error);
+        function shareSummary() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'WSJ Summary 2024',
+                    text: "Here's my WSJ reading summary!",
+                    url: 'https://gbzaid2.github.io/testPage/index.html'
+                })
+                .then(() => {
+                    console.log('Successfully shared');
+                })
+                .catch((error) => {
+                    console.error('Error sharing:', error);
+                });
+            } else {
+                alert('Sharing not supported on this browser.');
             }
         }
     </script>
