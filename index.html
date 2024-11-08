@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Open Graph meta tags -->
+    <meta property="og:title" content="WSJ Summary 2024">
+    <meta property="og:description" content="Here's my WSJ reading summary!">
+    <meta property="og:image" content="https://miro.medium.com/v2/resize:fit:720/format:webp/1*c6SPmmWmKoflLoQFfyMR2g.jpeg">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://example.com/your-page-url">
+    <!-- End of Open Graph meta tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WSJ Summary 2024</title>
+    <style>
+        /* Same styles as provided */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #00ADEF;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            width: 300px;
+            padding: 20px;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00ADEF;
+            margin-bottom: 10px;
+        }
+
+        .wsj-summary {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: white;
+            margin: 10px 0;
+        }
+
+        .data-section {
+            color: white;
+            font-size: 0.9rem;
+            margin: 15px 0;
+        }
+
+        .data-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00ADEF;
+        }
+
+        .subscribe-button {
+            display: inline-block;
+            background-color: #00ADEF;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+            text-decoration: none;
+        }
+
+        .subscribe-button:hover {
+            background-color: #008bb3;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <div id="content" class="container">
+        <div class="title">WSJ YOUR STORY</div>
+        <hr style="border-color: #333; margin-bottom: 20px;">
+        <div class="wsj-summary">WSJ Summary 2024</div>
+        <div class="data-section">Articles Published<br><div class="data-value">123,421</div></div>
+        <div class="data-section">Top day to read<br><div class="data-value">Tuesday</div></div>
+        <div class="data-section">Most Popular Section<br><div class="data-value">Business</div></div>
+        <div class="data-section">Most Popular Topic<br><div class="data-value">Russia</div></div>
+        <div class="data-section">Most Popular Author<br><div class="data-value">Joanna Stern</div></div>
+        <button onclick="shareSummary()" class="subscribe-button">Share Summary</button>
+    </div>
+
+    <script>
+        async function shareSummary() {
+            try {
+                // Capture screenshot using html2canvas
+                const content = document.getElementById('content');
+                const canvas = await html2canvas(content);
+
+                // Directly convert canvas to Blob
+                canvas.toBlob(async (blob) => {
+                    if (!blob) {
+                        console.error("Failed to create Blob from canvas");
+                        return;
+                    }
+
+                    // Create a file from the blob
+                    const file = new File([blob], "wsj-summary.png", { type: "image/png" });
+
+                    // Check if file sharing is supported
+                    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                        await navigator.share({
+                            title: "WSJ Summary 2024",
+                            text: "Here's my WSJ reading summary!",
+                            files: [file]
+                        });
+                        console.log("Shared successfully with image!");
+                    } else {
+                        console.log("Sharing not supported or image file type not supported.");
+                    }
+                }, 'image/png');
+            } catch (error) {
+                console.error("Error sharing summary with image:", error);
+            }
+        }
+    </script>
+</body>
+</html>
