@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WSJ Summary 2024</title>
     <style>
-        /* Same styles as provided */
+        /* Your existing styles */
         body {
             font-family: Arial, sans-serif;
             background-color: #000;
@@ -72,8 +72,6 @@
             background-color: #008bb3;
         }
     </style>
-    <!-- Include html2canvas library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaMn1iVu+LxNhq2zNia2F0QnH6e6i1YjL8tDDFXtzE5+JUuvBFLt/NiJXz+gHj8YrFJZg8LX94eF+FRY8HyJg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
     <div id="content" class="container">
@@ -88,17 +86,74 @@
         <button onclick="shareSummary()" class="subscribe-button">Share Summary</button>
     </div>
 
+    <!-- Hidden Canvas Element -->
+    <canvas id="summaryCanvas" width="600" height="800" style="display: none;"></canvas>
+
     <script>
         async function shareSummary() {
-            const content = document.getElementById('content');
+            const canvas = document.getElementById('summaryCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Define canvas dimensions
+            const width = canvas.width;
+            const height = canvas.height;
+
+            // Clear the canvas
+            ctx.clearRect(0, 0, width, height);
+
+            // Set background color
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, width, height);
+
+            // Set text properties
+            ctx.fillStyle = '#00ADEF';
+            ctx.font = 'bold 36px Arial';
+            ctx.textAlign = 'center';
+
+            // Draw Title
+            ctx.fillText('WSJ YOUR STORY', width / 2, 60);
+
+            // Draw a horizontal line
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(50, 80);
+            ctx.lineTo(width - 50, 80);
+            ctx.stroke();
+
+            // Draw Summary Title
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 30px Arial';
+            ctx.fillText('WSJ Summary 2024', width / 2, 130);
+
+            // Define data sections
+            const data = [
+                { label: 'Articles Published', value: '123,421' },
+                { label: 'Top day to read', value: 'Tuesday' },
+                { label: 'Most Popular Section', value: 'Business' },
+                { label: 'Most Popular Topic', value: 'Russia' },
+                { label: 'Most Popular Author', value: 'Joanna Stern' }
+            ];
+
+            // Draw data sections
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = '20px Arial';
+            let yPosition = 180;
+            data.forEach(item => {
+                ctx.fillText(item.label, width / 2, yPosition);
+                ctx.font = 'bold 28px Arial';
+                ctx.fillStyle = '#00ADEF';
+                ctx.fillText(item.value, width / 2, yPosition + 40);
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = '20px Arial';
+                yPosition += 80;
+            });
 
             try {
-                // Capture the screenshot using html2canvas
-                const canvas = await html2canvas(content, {backgroundColor: null});
-                // Convert the canvas to a blob
+                // Convert canvas to Blob
                 const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
 
-                // Create a File from the blob
+                // Create a File from the Blob
                 const file = new File([blob], 'wsj-summary.png', { type: 'image/png' });
 
                 // Check if the browser supports sharing files
@@ -106,7 +161,7 @@
 
                 if (navigator.share) {
                     if (canShareFiles) {
-                        // Share with files only
+                        // Share the image file
                         await navigator.share({
                             title: 'WSJ Summary 2024',
                             text: "Here's my WSJ reading summary!",
@@ -130,9 +185,9 @@
                 console.error('Error sharing:', error);
                 alert('Sharing failed or is not supported on this browser.');
 
-                // Additionally, provide a download option for the screenshot
+                // Provide a download option for the screenshot
                 try {
-                    const canvas = await html2canvas(content, {backgroundColor: null});
+                    // Convert canvas to Data URL
                     const dataURL = canvas.toDataURL('image/png');
 
                     // Create a temporary link to trigger download
