@@ -72,6 +72,8 @@
             background-color: #008bb3;
         }
     </style>
+    <!-- Include html2canvas library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaMn1iVu+LxNhq2zNia2F0QnH6e6i1YjL8tDDFXtzE5+JUuvBFLt/NiJXz+gHj8YrFJZg8LX94eF+FRY8HyJg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
     <div id="content" class="container">
@@ -87,21 +89,45 @@
     </div>
 
     <script>
-        function shareSummary() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'WSJ Summary 2024',
-                    text: "Here's my WSJ reading summary!",
-                    url: 'https://gbzaid2.github.io/testPage/index.html'
-                })
-                .then(() => {
+        async function shareSummary() {
+            const content = document.getElementById('content');
+
+            try {
+                // Capture the screenshot using html2canvas
+                const canvas = await html2canvas(content, {backgroundColor: null});
+                // Convert the canvas to a blob
+                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                
+                // Create a File from the blob
+                const file = new File([blob], 'wsj-summary.png', { type: 'image/png' });
+
+                // Check if the browser supports sharing files
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        title: 'WSJ Summary 2024',
+                        text: "Here's my WSJ reading summary!",
+                        files: [file],
+                        url: window.location.href
+                    });
                     console.log('Successfully shared');
-                })
-                .catch((error) => {
-                    console.error('Error sharing:', error);
-                });
-            } else {
-                alert('Sharing not supported on this browser.');
+                } else {
+                    // Fallback: Share the image via a data URL
+                    const dataURL = canvas.toDataURL('image/png');
+                    const shareText = "Here's my WSJ reading summary!";
+                    const shareUrl = window.location.href;
+                    const shareData = {
+                        title: 'WSJ Summary 2024',
+                        text: shareText,
+                        url: shareUrl
+                    };
+                    
+                    // Some browsers may not support files, so we can share the URL and text
+                    await navigator.share(shareData);
+                    console.log('Shared without image');
+                }
+            } catch (error) {
+                console.error('Error sharing:', error);
+                alert('Sharing failed or is not supported on this browser.');
             }
         }
     </script>
