@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WSJ Summary 2024</title>
     <style>
-        /* Your existing styles */
+        /* Same styles as provided */
         body {
             font-family: Arial, sans-serif;
             background-color: #000;
@@ -86,124 +86,22 @@
         <button onclick="shareSummary()" class="subscribe-button">Share Summary</button>
     </div>
 
-    <!-- Hidden Canvas Element -->
-    <canvas id="summaryCanvas" width="600" height="800" style="display: none;"></canvas>
-
     <script>
-        async function shareSummary() {
-            const canvas = document.getElementById('summaryCanvas');
-            const ctx = canvas.getContext('2d');
-
-            // Define canvas dimensions
-            const width = canvas.width;
-            const height = canvas.height;
-
-            // Clear the canvas
-            ctx.clearRect(0, 0, width, height);
-
-            // Set background color
-            ctx.fillStyle = '#000';
-            ctx.fillRect(0, 0, width, height);
-
-            // Set text properties
-            ctx.fillStyle = '#00ADEF';
-            ctx.font = 'bold 36px Arial';
-            ctx.textAlign = 'center';
-
-            // Draw Title
-            ctx.fillText('WSJ YOUR STORY', width / 2, 60);
-
-            // Draw a horizontal line
-            ctx.strokeStyle = '#333';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(50, 80);
-            ctx.lineTo(width - 50, 80);
-            ctx.stroke();
-
-            // Draw Summary Title
-            ctx.fillStyle = '#FFFFFF';
-            ctx.font = 'bold 30px Arial';
-            ctx.fillText('WSJ Summary 2024', width / 2, 130);
-
-            // Define data sections
-            const data = [
-                { label: 'Articles Published', value: '123,421' },
-                { label: 'Top day to read', value: 'Tuesday' },
-                { label: 'Most Popular Section', value: 'Business' },
-                { label: 'Most Popular Topic', value: 'Russia' },
-                { label: 'Most Popular Author', value: 'Joanna Stern' }
-            ];
-
-            // Draw data sections
-            ctx.fillStyle = '#FFFFFF';
-            ctx.font = '20px Arial';
-            let yPosition = 180;
-            data.forEach(item => {
-                ctx.fillText(item.label, width / 2, yPosition);
-                ctx.font = 'bold 28px Arial';
-                ctx.fillStyle = '#00ADEF';
-                ctx.fillText(item.value, width / 2, yPosition + 40);
-                ctx.fillStyle = '#FFFFFF';
-                ctx.font = '20px Arial';
-                yPosition += 80;
-            });
-
-            try {
-                // Convert canvas to Blob
-                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-
-                // Create a File from the Blob
-                const file = new File([blob], 'wsj-summary.png', { type: 'image/png' });
-
-                // Check if the browser supports sharing files
-                const canShareFiles = navigator.canShare && navigator.canShare({ files: [file] });
-
-                if (navigator.share) {
-                    if (canShareFiles) {
-                        // Share the image file
-                        await navigator.share({
-                            title: 'WSJ Summary 2024',
-                            text: "Here's my WSJ reading summary!",
-                            files: [file]
-                        });
-                        console.log('Successfully shared with image');
-                    } else {
-                        // Fallback: Share text and URL only
-                        await navigator.share({
-                            title: 'WSJ Summary 2024',
-                            text: "Here's my WSJ reading summary!",
-                            url: window.location.href
-                        });
-                        console.log('Shared without image');
-                    }
-                } else {
-                    // Web Share API not supported
-                    throw new Error('Web Share API not supported');
-                }
-            } catch (error) {
-                console.error('Error sharing:', error);
-                alert('Sharing failed or is not supported on this browser.');
-
-                // Provide a download option for the screenshot
-                try {
-                    // Convert canvas to Data URL
-                    const dataURL = canvas.toDataURL('image/png');
-
-                    // Create a temporary link to trigger download
-                    const link = document.createElement('a');
-                    link.href = dataURL;
-                    link.download = 'wsj-summary.png';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-
-                    alert('Screenshot downloaded. You can share it manually.');
-                } catch (downloadError) {
-                    console.error('Error downloading the image:', downloadError);
-                    console.log("hello");
-                    alert('Unable to download the screenshot.');
-                }
+        function shareSummary() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'WSJ Summary 2024',
+                    text: "Here's my WSJ reading summary!",
+                    url: 'https://gbzaid2.github.io/testPage/index.html'
+                })
+                .then(() => {
+                    console.log('Successfully shared');
+                })
+                .catch((error) => {
+                    console.error('Error sharing:', error);
+                });
+            } else {
+                alert('Sharing not supported on this browser.');
             }
         }
     </script>
